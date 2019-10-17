@@ -6,3 +6,5 @@ build/
 static/img/
 logs/
 main.spec
+files/
+*.db

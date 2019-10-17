@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+{% block linkrefs %}
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/offer.css") }}">
+{% endblock %}
+{% block header %}
+    <div id="login-in">
+
+        <a class="menu-btn" href="{{ url_for("filemanager.offer_view") }}">
+            <i class="fas fa-file-upload"></i><span>Offer</span>
+        </a>
+        <a class="menu-btn" href="{{ url_for("filemanager.home_view") }}">
+            <i class="fas fa-user"></i><span>Login in</span>
+        </a>
+    </div>
+{% endblock %}
+{% block  title %}Offer{% endblock %}
+{% block content %}
+    <div id="content">
+        <div id="tools">
+            <input type="file">
+        </div>
+        <div id="offer-table">
+            <div id="table-legend">
+                <div class="table-index">#</div>
+                <div class="table-name">Name</div>
+                <div class="table-receiver">Receiver</div>
+                <div class="table-date">Date</div>
+                <div class="table-size">Size</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

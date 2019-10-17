@@ -1,0 +1,85 @@
+{% extends 'layout.html' %}
+{% block linkrefs %}
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/transfer.css") }}">{% endblock %}
+{% block  title %}Transfer{% endblock %}
+{% block header %}
+    <div id="login-in">
+        <a class="menu-btn" href="{{ url_for("filemanager.logout") }}">
+            <i class="fas fa-user-times"></i><span>Logout</span>
+        </a>
+    </div>
+{% endblock %}
+{% block content %}
+    <div id="files-loading" class="display-none">
+        <div id="progress">
+            <span id="progress-percents">0% (0 MB of 0 MB)</span>
+            <span id="progress-counts">0 files</span>
+            <div id="progress-bar"></div>
+        </div>
+        <div onclick="abortUpload()" id="files-abort"><span>Abort</span><i class="fas fa-times"></i></div>
+    </div>
+    <div id="dialog" class="display-none">
+        <div id="qrcode-window">
+            <div id="qrcode-close" ><i onclick="toggleDialog();" class="fas fa-times"></i></div>
+            <div id="qrcode-body">
+                <div id="qrcode-title"><span>Your QR-code is ready!</span></div>
+                <div id="qrcode-file"><span>You requested download for </span><span id="qrcode-filename"></span></div>
+                <div><img id="qrcode-img"/></div>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+        <div id="tools">
+            <div id="directory">{{ inputs.directory(value=directory, disabled=True) }}</div>
+            <div>
+                {{ inputs.files() }}
+                {{ inputs.files.label("<span><i class='fas fa-upload'></i><span>Choose a file...</span></span>") }}
+                {{ inputs.submit(onclick="upload()") }}
+            </div>
+            <div>{{ inputs.regexp(placeholder="Search...") }}</div>
+        </div>
+        <div id="transfer-table">
+            <div id="table-legend">
+                <div class="table-index"><span>#</span></div>
+                <div id="name" class="table-name" onclick="sortTable(this)"><span>Name</span></div>
+                <div id="type" class="table-type" onclick="sortTable(this)"><span>Type</span></div>
+                <div id="created" class="table-create" onclick="sortTable(this)"><span>Created</span>
+                    <i style="transform: rotate(0deg);" id="sort-arrow" class="fas fa-sort-down"></i>
+                </div>
+                <div id="modified" class="table-mod" onclick="sortTable(this)"><span>Modified</span></div>
+                <div id="size" class="table-size" onclick="sortTable(this)"><span>Size</span></div>
+                <div id="size" class="table-barcode"><span>QR-code</span></div>
+            </div>
+            <div id="table-default">
+                <a id="back"
+                   href="{{ url_for("filemanager.transfer_view") + "?folder=" + prev_directory }}"><span>Back</span></a>
+            </div>
+            {% if table %}
+                {% for file in table %}
+                    <div onclick="download(event, this, '{{ file.get('type') }}');" class="table-row">
+                        <div class="table-index"><span>{{ loop.index }}</span></div>
+                        <div class="table-name"><span>{{ file.get('name') }}</span></div>
+                        <div class="table-type"><span>{{ file.get('type') }}</span></div>
+                        <div class="table-created"><span>{{ file.get('created') }}</span></div>
+                        <div class="table-modified"><span>{{ file.get('modified') }}</span></div>
+                        <div class="table-size"><span>{{ file.get('size') }}</span></div>
+                        <div class="table-barcode">
+                            <span>
+                            {% if file.get('type') != "File folder" %}
+                                <i id="qrcode" class="fas fa-qrcode"></i>
+                            {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="table-row">
+                    <span>Пусто</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for("static", filename="js/transfer.js") }}"></script>
+{% endblock %}

@@ -1,0 +1,257 @@
+.light{
+    background-color: #f9f9f9;
+}
+
+.light input[type=submit]{
+    background-color: #c5a5c9;
+    border: 1px solid #c5a5c9;
+    color: #f9f9f9;
+}
+
+.light button{
+    background-color: #c5a5c9;
+    border: 1px solid #c5a5c9;
+    color: #f9f9f9;
+}
+
+.light #header {
+    background-color: #EA99DB;
+    color: white;
+}
+
+.light #window {
+    color: black;
+}
+
+.light #login label {
+    color: #b798bb;
+}
+
+.light #login #submit {
+    background-color: #c5a5c9;
+    border: 1px solid #c5a5c9;
+    color: #f9f9f9;
+}
+
+.light #login input {
+    border: 1px solid #c5a5c9;
+    background-color: #f9f9f9;
+    color: black;
+}
+
+.light .notify{
+    background-color: #eceaff;
+    color: black;
+}
+
+.light .success{
+    background-color: #beffc4 !important;
+}
+
+.light .fail{
+    background-color: #ffcac5 !important;
+}
+
+.light .notify .close{
+    color: black;
+}
+
+.light .notify .close:hover{
+    color: white;
+    background-color: black;
+}
+
+.light #directory-input:disabled{
+    color: black;
+    border: 1px solid #c5a5c9;
+}
+
+.light #transfer-table {
+    color: black
+}
+
+.light #table-legend {
+    border-bottom: 1px solid #5c4c60;
+}
+
+.light #table-legend > div:hover {
+    background-color: #dddddd;
+}
+
+.light #transfer-table .table-row:hover{
+    background-color: #dddddd;
+}
+
+.light #table-default {
+    background-color: #e8e8e8;
+}
+
+.light #table-default:hover {
+    background-color: #dddddd;
+}
+
+.light label[for=files-input]{
+    border: 1px solid #c5a5c9;
+}
+
+.light label[for=files-input] > span{
+    background-color: #c5a5c9;
+    color: white;
+}
+
+.light #upload{
+    color: white;
+}
+
+.light #regexp-input{
+    border: 1px solid #c5a5c9;
+}
+
+.light #qrcode-window > * {
+    background-color: #ffffff;
+}
+
+.light #progress-bar{
+    background-color: #91ff8d;
+}
+
+.light #files-abort{
+    background-color: #1d1d1d;
+    color: white;
+}
+
+.light #files-loading{
+    border-bottom: 1px solid #cacaca;
+}
+
+/* DARK */
+
+.dark {
+    background-color: #1d1d1d;
+}
+
+.dark input[type=submit]{
+    background-color: #5ba4cf;
+    border: 1px solid #5ba4cf;
+}
+
+.dark button{
+    background-color: #5ba4cf;
+    border: 1px solid #5ba4cf;
+}
+
+.dark #header {
+    background-color: #153b66;
+    /*background-color: #608664;*/
+    color: white;
+}
+
+.dark #window {
+    color: white;
+}
+
+.dark #login  label {
+    color: #5a93be;
+}
+
+.dark #login #submit {
+    background-color: #5ba4cf;
+    border: 1px solid #5ba4cf;
+}
+
+.dark #login input {
+    border: 1px solid #5ba4cf;
+    background-color: #1d1d1d;
+    color: white;
+}
+
+.dark .notify{
+    background-color: #25236D;
+    color: white;
+}
+
+.dark .success{
+    background-color: #31bd39 !important;
+}
+
+.dark .fail{
+    background-color: #ae253c !important;
+}
+
+.dark .notify .close{
+    color: white;
+}
+
+.dark .notify .close:hover{
+    color: black;
+    background-color: white;
+}
+
+.dark #directory-input:disabled{
+    color: white;
+    border: 1px solid #5ba4cf;
+}
+
+.dark #transfer-table{
+    color: white;
+}
+
+.dark #table-legend {
+    border-bottom: 1px solid #61b5e4;
+}
+
+.dark #table-legend > div:hover {
+    background-color: #5e7380;
+}
+
+.dark #transfer-table .table-row:hover{
+    background-color: #5e7380;
+}
+
+.dark #table-default {
+    background-color: #425562;
+}
+
+.dark #table-default:hover {
+    background-color: #5e7380;
+}
+
+.dark label[for=files-input]{
+    border: 1px solid #5ba4cf;
+    color: white;
+}
+
+.dark label[for=files-input] > span{
+    background-color: #5ba4cf;
+    color: white;
+}
+
+.dark #upload{
+    color: white;
+}
+
+.dark #regexp-input{
+    background-color: #292927;
+    border: 1px solid #5ba4cf;
+}
+
+.dark #qrcode-window > * {
+    background-color: #c7c7c7;
+}
+
+.dark #progress {
+    color: white;
+}
+
+.dark #progress-bar{
+    background-color: #31bd39;
+}
+
+.dark #files-abort{
+    background-color: #ffffff;
+    color: black;
+}
+
+.dark #files-loading{
+    border-bottom: 1px solid #cacaca;
+}

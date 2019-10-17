@@ -1,0 +1,10 @@
+#offer-table{
+    display: flex;
+    flex-direction: column;
+}
+
+#offer-table #table-legend {
+    padding: 0 5rem;
+    display: flex;
+    flex-direction: row;
+}
