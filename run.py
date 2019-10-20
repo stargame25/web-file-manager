@@ -15,4 +15,4 @@ def database_init(app):
 
 if __name__ == '__main__':
     database_init(app)
-    app.run('0.0.0.0', debug=True, port=PORT)
+    app.run(host='0.0.0.0', debug=True, port=PORT)

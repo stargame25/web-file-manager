@@ -20,6 +20,9 @@ bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = 'filemanager.home_view'
 
+sitemap = dict(home='/', offer='/offer', transfer='/transfer', qrcode='/qrcode', download='/download',
+               upload='/upload', files='/files', theme='/theme', logout='/logout')
+
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = token_hex(32)

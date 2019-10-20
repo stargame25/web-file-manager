@@ -1,13 +1,15 @@
 const table = document.getElementById("transfer-table");
-const defaultData = [...table.getElementsByClassName("table-row")];
 const arrow = document.getElementById("sort-arrow");
 const dialog = document.getElementById("dialog");
 const filesInput = document.getElementById("files-input");
 const loading = document.getElementById("files-loading");
+const uploadText = document.querySelector("label[for=files-input] > span > span");
+let sourcePath = document.getElementById("directory-input");
 filesInput.onchange = filesInputTrigger;
+refreshTable();
 
 function sortTable(element) {
-    if(!defaultData){
+    if (![...table.getElementsByClassName("table-row")]) {
         return;
     }
     let reg = new RegExp(`(\\d+)(deg)`);
@@ -36,24 +38,28 @@ function sortTable(element) {
 }
 
 function sortBy(field, type) {
-    let items = Array.prototype.slice.call([...defaultData]);
+    let items = Array.prototype.slice.call([...table.getElementsByClassName("table-row")]);
     let dividedItems = divideByType(items);
     let result = [];
-    dividedItems.forEach(function(item){
+    dividedItems.forEach(function (item) {
         if (type === "asc") {
             item.sort(function (a, b) {
-                return a.querySelector("div.table-" + field + " > span").textContent.toLocaleLowerCase().localeCompare(b.querySelector("div.table-" + field + " > span").textContent.toLocaleLowerCase());
+                return a.querySelector("div.table-" + field + " > span")
+                    .textContent.toLocaleLowerCase()
+                    .localeCompare(b.querySelector("div.table-" + field + " > span").textContent.toLocaleLowerCase());
             });
         } else {
             item.sort(function (a, b) {
-                return b.querySelector("div.table-" + field + " > span").textContent.toLocaleLowerCase().localeCompare(a.querySelector("div.table-" + field + " > span").textContent.toLocaleLowerCase());
+                return b.querySelector("div.table-" + field + " > span")
+                    .textContent.toLocaleLowerCase()
+                    .localeCompare(a.querySelector("div.table-" + field + " > span").textContent.toLocaleLowerCase());
             });
         }
         result.push(item);
     });
     result = [...result[0], ...result[1]];
     for (let i = 0, len = result.length; i < len; i++) {
-        result[i].querySelector("div.table-index > span").textContent = i+1;
+        result[i].querySelector("div.table-index > span").textContent = i + 1;
         let parent = result[i].parentNode;
         let detatchedItem = parent.removeChild(result[i]);
         parent.appendChild(detatchedItem);
@@ -72,12 +78,12 @@ function divideByType(data) {
     return result
 }
 
-function showQRcode(folder, file){
+function showQRcode(folder, file) {
     toggleDialog();
     let form = {folder: folder, file: file};
     xhr.open("POST", "/qrcode");
     xhr.responseType = 'blob';
-    xhr.onload = function(){
+    xhr.onload = function () {
         let response = new Blob([xhr.response], {type: 'image/png'});
         let urlCreator = window.URL || window.webkitURL;
         let imageUrl = urlCreator.createObjectURL(response);
@@ -90,89 +96,176 @@ function showQRcode(folder, file){
     xhr.send(JSON.stringify(form));
 }
 
-function toggleDialog(){
-    let qrwindow = dialog.querySelector("div#qrcode-window");
-    if(dialog.className === "display-none"){
+function toggleDialog() {
+    let qrWindow = dialog.querySelector("div#qrcode-window");
+    if (dialog.className === "display-none") {
         dialog.className = "";
-        qrwindow.className = "popOutOpen";
+        qrWindow.className = "popOutOpen";
     } else {
-        qrwindow.className = "popOutClose";
-        setTimeout(() => {dialog.className = "display-none";}, 400)
+        qrWindow.className = "popOutClose";
+        setTimeout(() => {
+            dialog.className = "display-none";
+        }, 400)
     }
 }
 
 function download(event, element, type) {
-    let sourcePath = document.getElementById("directory-input").value;
     let filePath = element.querySelector("div.table-name > span").textContent;
-    if(event.target.getAttribute("id") === "qrcode" ||
-        (event.target.className === "table-barcode" && event.target.querySelector("i#qrcode"))){
-        showQRcode(sourcePath, filePath);
+    if (event.target.getAttribute("id") === "qrcode" ||
+        (event.target.className === "table-barcode" && event.target.querySelector("i#qrcode"))) {
+        showQRcode(sourcePath.value, filePath);
         return;
     }
     if (type === "File folder") {
-        window.location.href = 'transfer?folder=' + (sourcePath === "\\" ? "" : sourcePath)  + "\\" + filePath;
+        if (sourcePath.value === '\\'){
+            sourcePath.value = sourcePath.value + filePath;
+            refreshTable(sourcePath.value + filePath);
+        } else {
+            sourcePath.value = sourcePath.value + '\\' + filePath;
+            refreshTable('\\' + filePath);
+        }
+        return;
     }
-    window.open('download?folder=' + sourcePath + "&file=" + filePath, "Downloading file...");
+    window.open('download?folder=' + sourcePath.value + "&file=" + filePath, "Downloading file...");
 }
 
-function filesInputTrigger(event){
-    const uploadText = document.querySelector("label[for=files-input] > span > span");
-    if(event.target.files.length === 1){
+function back(){
+    if (sourcePath && sourcePath.value && sourcePath.value !== '\\' && (sourcePath.value.split("\\").length > 1)){
+        let splitted = sourcePath.value.split("\\");
+        let directory = splitted.slice(0, splitted.length-1);
+        sourcePath.value = directory.join("\\");
+        refreshTable(directory.join(""));
+    }
+}
+
+function filesInputTrigger(event) {
+    if (event.target.files.length === 1) {
         uploadText.textContent = event.target.files.length + " file selected"
-    } else if(event.target.files.length > 1) {
+    } else if (event.target.files.length > 1) {
         uploadText.textContent = event.target.files.length + " files selected"
     } else {
         uploadText.textContent = "Choose a file..."
     }
 }
 
-function upload(){
-    uploadFile([...filesInput.files]);
+function upload() {
+    if(filesInput.files.length > 0){
+        uploadFile([...filesInput.files]);
+    }
 }
 
 function abortUpload() {
-    if(xhr.status === 0){
+    if (xhr.status === 0) {
         xhr.abort();
     } else {
         toggleLoading()
     }
 }
 
-function uploadFile(files){
+function uploadFile(files) {
     let fileCount = loading.querySelector("div#progress > span#progress-counts");
     let abortButton = loading.querySelector("div#files-abort > span");
     let span = loading.querySelector("span");
     let form = new FormData();
     abortButton.textContent = "Abort";
-    if(files.length === 1){
+    if (files.length === 0){
+        filesInput.files = '';
+        uploadText.textContent = "Choose a file...";
+        return
+    } else if (files.length === 1) {
         fileCount.textContent = files.length + " file uploading...";
     } else {
         fileCount.textContent = files.length + " files uploading...";
     }
+    uploadText.textContent = "Choose a file...";
     files.map(file => form.append("files", file));
+    files.map(file => form.append("folder", sourcePath.value));
     toggleLoading();
     xhr.upload.onprogress = onProgressTrigger;
     xhr.upload.onerror = onErrorTrigger;
     xhr.upload.onabort = onAbortTrigger;
     xhr.open("POST", "/upload");
     xhr.onload = function () {
-        if(xhr.status === 200){
+        if (xhr.status === 200) {
             abortButton.textContent = "Close";
-            if(files.length === 1){
+            if (files.length === 1) {
                 fileCount.textContent = files.length + " file uploaded!";
             } else {
                 fileCount.textContent = files.length + " files uploaded!";
             }
+            setTimeout(() => {toggleLoading()}, 3000);
             span.textContent = "";
+            filesInput.value = "";
+            refreshTable(sourcePath.value);
             console.log("Uploaded!");
         } else {
-            console.log("Hi")
+            console.log("Upload fail")
         }
     };
     xhr.send(form);
 }
 
-function onProgressTrigger(event){
+function refreshTable(folder=""){
+    let childs = [...document.querySelectorAll("div#transfer-table > div:not(#table-legend):not(#table-default)")];
+    childs.forEach(child => table.removeChild(child));
+    xhr.open("GET", "/files?folder=" + folder);
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            let data = JSON.parse(xhr.responseText);
+            if(data === null){
+                let row = createTableEmptyRow();
+                table.appendChild(row);
+                return;
+            }
+            data.forEach((row, index) => {
+                let temp = createTableRow();
+                temp.setAttribute("onclick", "download(event, this, '" + row['type'] + "');");
+                temp.querySelector("div.table-index > span").textContent = index + 1;
+                temp.querySelector("div.table-name > span").textContent = row['name'];
+                temp.querySelector("div.table-type > span").textContent = row['type'];
+                temp.querySelector("div.table-created > span").textContent = row['created'];
+                if(row['type'] === 'File folder') {
+                    temp.querySelector("div.table-modified > span").textContent = row['modified'];
+                    temp.querySelector("div.table-size > span").textContent = row['size'];
+                } else {
+                    temp.querySelector("div.table-modified > span").textContent = row['modified'];
+                    temp.querySelector("div.table-size > span").textContent = row['size'];
+                    temp.querySelector("div.table-barcode > span").innerHTML = `<i id="qrcode" class="fas fa-qrcode" aria-hidden="true"></i>`;
+                }
+                table.appendChild(temp);
+            });
+        } else {
+            console.log("Refresh fail");
+        }
+    };
+    xhr.send();
+}
+
+function createTableRow(){
+    let row = document.createElement("div");
+    row.className = "table-row";
+    let classes = ['index', 'name', 'type', 'created', 'modified', 'size', 'barcode'];
+    classes.forEach(className => {
+        let div = document.createElement("div");
+        div.className = "table-" + className;
+        let span = document.createElement("span");
+        div.appendChild(span);
+        row.appendChild(div);
+    });
+    return row;
+}
+
+function createTableEmptyRow(){
+    let row = document.createElement("div");
+    let span = document.createElement("span");
+    span.textContent = "Empty";
+    row.className = "table-row";
+    row.style.justifyContent = "center";
+    row.appendChild(span);
+    return row;
+}
+
+function onProgressTrigger(event) {
     let span = loading.querySelector("span");
     let progressBar = loading.querySelector("div#progress-bar");
     let percent = ((event.loaded / event.total) * 100).toFixed(2);
@@ -182,24 +275,25 @@ function onProgressTrigger(event){
     span.textContent = percent + "%" + " (" + size_loaded + " MB of " + size_full + " MB)";
 }
 
-function onErrorTrigger(){
+function onErrorTrigger() {
     toggleLoading();
+    filesInput.value = "";
 }
 
-function onAbortTrigger(){
+function onAbortTrigger() {
     toggleLoading();
+    filesInput.value = "";
 }
 
 function toggleLoading() {
-    let uploadButton =  document.querySelector("input#upload");
-    let uploadInput =  document.querySelector("input#files-input");
-    let uploadLabel =  document.querySelector("label[for=files-input]");
-    if(loading.className === "display-none"){
+    let uploadButton = document.querySelector("input#upload");
+    let uploadInput = document.querySelector("input#files-input");
+    let uploadLabel = document.querySelector("label[for=files-input]");
+    if (loading.className === "display-none") {
         uploadButton.disabled = true;
         uploadInput.disabled = true;
         loading.className = "slideDownOpen";
-    } else{
-
+    } else {
         loading.className = "slideDownClose";
         setTimeout(() => {
             loading.className = "display-none";
@@ -208,3 +302,4 @@ function toggleLoading() {
         }, 400);
     }
 }
+

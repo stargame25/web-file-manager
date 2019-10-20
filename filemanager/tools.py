@@ -4,20 +4,22 @@ from io import BytesIO
 
 BASE_PATH = os.path.abspath(".")
 
+
 def resource_path(*args):
     if args:
         return os.path.join(BASE_PATH, *args)
     else:
         return BASE_PATH
 
+
 def alt_resource_path(path, args):
-    if "\\" in args:
-        r_path = path
-        for i in args.split("\\"):
-            r_path = os.path.join(r_path, i)
-        return r_path
+    if args and "\\" in args:
+        return os.path.join(path, *(args.split("\\")))
+    elif args is None:
+        return path
     else:
         return os.path.join(path, args)
+
 
 def sizeof_fmt(num, suffix='B'):
     for unit in ['','K','M','G','T','P','E','Z']:
@@ -25,6 +27,7 @@ def sizeof_fmt(num, suffix='B'):
             return "%3.1f %s%s" % (num, unit, suffix)
         num /= 1024.0
     return "%.1f %s%s" % (num, 'Yi', suffix)
+
 
 def generate_theme(session):
     hour = datetime.datetime.now().hour
@@ -35,14 +38,13 @@ def generate_theme(session):
     return True
 
 
-def gen_table(files_directory, args):
+def gen_table(files_directory):
     pairs = []
-    full_path = alt_resource_path(files_directory, args)
-    if not os.path.isdir(full_path):
+    if not os.path.isdir(files_directory):
         return None
-    list = os.listdir(full_path)
+    list = os.listdir(files_directory)
     for file in list:
-        location = os.path.join(full_path, file)
+        location = os.path.join(files_directory, file)
         data = os.stat(location)
         isfile = os.path.isfile(location)
         type = "File folder"
@@ -61,6 +63,7 @@ def gen_table(files_directory, args):
     pairs.sort(key=lambda s: s['type'] == "File folder", reverse=True)
     return pairs
 
+
 def file_exists(files_directory, file):
     if not os.path.isdir(files_directory):
         return False
@@ -69,11 +72,33 @@ def file_exists(files_directory, file):
         return True
     return False
 
+
 def serve_pil_image(pil_img):
     img_io = BytesIO()
     pil_img.save(img_io, 'PNG')
     img_io.seek(0)
     return img_io
 
-def save_file(folder, file):
-    pass
+
+def save_file(files_directory, file_name, file, override=False):
+    print(files_directory, file_name)
+    full_path = resource_path(files_directory, file_name)
+    if not os.path.isdir(files_directory):
+        return None
+    if os.path.exists(full_path) and os.path.isfile(full_path):
+        if override:
+            with open(full_path, 'wb') as f:
+                f.write(file)
+        else:
+            index = 0
+            while os.path.exists(full_path) and os.path.isfile(full_path):
+                index += 1
+                new_file_name = file_name.split(".")
+                new_file_name[0] = new_file_name[0] + " ({0})".format(index)
+                new_file_name = ".".join(new_file_name)
+                full_path = resource_path(files_directory, new_file_name)
+            with open(full_path, 'wb') as f:
+                f.write(file)
+    else:
+        with open(full_path, 'wb') as f:
+            f.write(file)
