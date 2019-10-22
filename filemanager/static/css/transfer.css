@@ -5,6 +5,11 @@
     flex-grow: 1;
 }
 
+.wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
 #files-loading{
     display: flex;
     justify-content: flex-start;
@@ -34,7 +39,7 @@
     position: absolute;
     left: 0;
     height: 3rem;
-    width: 0%;
+    width: 0;
     z-index: -1;
     background-color: #91ff8d;
 }
@@ -81,7 +86,7 @@
 #directory-input{
     font-size: 2rem;
     padding: .6rem 1rem;
-    width: 50rem;
+    max-width: 50rem;
 }
 
 #directory-input:disabled{
@@ -119,12 +124,16 @@ label[for=files-input] > span > *:not(:last-child){
 #regexp-input{
     padding: .6rem 1rem;
     font-size: 1.6rem;
-    width: 27rem;
+    max-width: 27rem;
     transition: .22s ease-in;
 }
 
+#table-wrapper {
+    margin: 0 5rem;
+}
+
 #transfer-table {
-    padding: 0 5rem;
+    min-width: 100rem;
     display: flex;
     flex-direction: column;
 }

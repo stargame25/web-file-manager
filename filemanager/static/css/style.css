@@ -37,7 +37,7 @@ a{
 }
 
 #header{
-    height: 6.4rem;
+    min-height: 6.4rem;
     width: 100vw;
     display: flex;
     justify-content: space-between;
@@ -56,6 +56,8 @@ a{
 #menu {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 #menu > * {
@@ -64,6 +66,11 @@ a{
     justify-content: center;
     align-items: center;
     margin-right: 2rem;
+}
+
+#menu > * > a{
+    display: flex;
+    align-items: center;
 }
 
 #menu a{
@@ -97,7 +104,6 @@ a{
     position: fixed;
     bottom: 3rem;
     right: 3rem;
-    height: 40rem;
     width: 30rem;
     display: flex;
     flex-direction: column;
@@ -219,4 +225,16 @@ a{
 
 .slider-wrapper input:checked + .slider::after {
     transform: translate3d(22px, 2px, 0);
+}
+
+@media (min-device-height: 667px) and (min-device-width: 375px) and (-webkit-min-device-pixel-ratio: 3){
+    html{
+        font-size: 8px;
+    }
+}
+
+@media screen and (max-device-width: 640px){
+    html{
+        font-size: 8px;
+    }
 }

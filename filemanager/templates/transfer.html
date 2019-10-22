@@ -38,7 +38,8 @@
             </div>
             <div>{{ inputs.regexp(placeholder="Search...") }}</div>
         </div>
-        <div id="transfer-table">
+        <div class="wrapper" id="table-wrapper">
+            <div id="transfer-table">
             <div id="table-legend">
                 <div class="table-index"><span>#</span></div>
                 <div id="name" class="table-name" onclick="sortTable(this)"><span>Name</span></div>
@@ -53,6 +54,7 @@
             <div id="table-default">
                 <a id="back" onclick="back()"><span>Back</span></a>
             </div>
+        </div>
         </div>
     </div>
 {% endblock %}
