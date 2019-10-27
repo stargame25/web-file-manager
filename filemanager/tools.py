@@ -42,23 +42,23 @@ def gen_table(files_directory):
     pairs = []
     if not os.path.isdir(files_directory):
         return None
-    list = os.listdir(files_directory)
-    for file in list:
+    files_list = os.listdir(files_directory)
+    for file in files_list:
         location = os.path.join(files_directory, file)
         data = os.stat(location)
         isfile = os.path.isfile(location)
-        type = "File folder"
+        ftype = "File folder"
         size = ""
         modified = ""
         if isfile:
             size = sizeof_fmt(data.st_size)
             modified = datetime.datetime.fromtimestamp(data.st_mtime).strftime("%Y\%m\%d %H:%M:%S")
             if len(file.split(".")) > 1:
-                type = file.split(".")[-1]
+                ftype = file.split(".")[-1]
             else:
-                type = "File"
+                ftype = "File"
         created = datetime.datetime.fromtimestamp(data.st_ctime).strftime("%Y\%m\%d %H:%M:%S")
-        pairs.append({"name": file, "type": type, "created": created, "modified": modified, "size": size})
+        pairs.append({"name": file, "type": ftype, "created": created, "modified": modified, "size": size})
     pairs.sort(key=lambda s: s['created'], reverse=True)
     pairs.sort(key=lambda s: s['type'] == "File folder", reverse=True)
     return pairs
