@@ -2,6 +2,7 @@ import datetime
 import os
 from io import BytesIO
 
+
 BASE_PATH = os.path.abspath(".")
 
 
@@ -81,7 +82,6 @@ def serve_pil_image(pil_img):
 
 
 def save_file(files_directory, file_name, file, override=False):
-    print(files_directory, file_name)
     full_path = resource_path(files_directory, file_name)
     if not os.path.isdir(files_directory):
         return None
@@ -102,3 +102,16 @@ def save_file(files_directory, file_name, file, override=False):
     else:
         with open(full_path, 'wb') as f:
             f.write(file)
+
+
+def valid_upload_dir(path):
+    if not path:
+        path = os.path.join(BASE_PATH, "files")
+    if os.path.isdir(path) and os.path.exists(path):
+        return path
+    else:
+        try:
+            os.mkdir(path)
+            return path
+        except Exception:
+            return None

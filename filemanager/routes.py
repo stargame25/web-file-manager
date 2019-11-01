@@ -1,15 +1,14 @@
 from flask import Blueprint, request, Response, render_template, redirect, url_for, session, flash, send_from_directory, send_file, jsonify
 from flask_login import login_user, current_user, logout_user, login_required
-from filemanager import db, bcrypt, PORT, sitemap
+from filemanager import db, bcrypt, sitemap, FILE_DIR
 from filemanager.tools import *
 from filemanager.models import *
 from filemanager.forms import *
 import qrcode as qr
 
 manager = Blueprint('filemanager', __name__)
-upload_dir = "files"
-file_folder = resource_path(BASE_PATH, upload_dir)
-
+file_folder = FILE_DIR
+print("File folder", file_folder)
 
 @manager.route(sitemap['home'], methods=['GET', 'POST'])
 def home_view():
